@@ -87,7 +87,7 @@ export default function Home() {
     setDetailLoading(true)
     setIsModalOpen(true)
     try {
-      const res = await fetch(`${ENGUE_URL}/api/video/${code}`)
+      const res = await fetch(`${ENGINE_URL}/api/video/${code}`)
       const data = await res.json()
       if (data.code) {
         setSelectedVideo(data)
