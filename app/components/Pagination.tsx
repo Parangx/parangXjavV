@@ -11,9 +11,18 @@ export default function Pagination({
 }) {
   if (totalPages <= 1) return null
 
-  const pages = []
-  for (let i = 1; i <= Math.min(totalPages, 5); i++) {
-    pages.push(i)
+  const getPageNumbers = () => {
+    const pages: number[] = []
+    const maxVisible = 5
+    let start = Math.max(1, currentPage - Math.floor(maxVisible / 2))
+    let end = Math.min(totalPages, start + maxVisible - 1)
+    if (end - start < maxVisible - 1) {
+      start = Math.max(1, end - maxVisible + 1)
+    }
+    for (let i = start; i <= end; i++) {
+      pages.push(i)
+    }
+    return pages
   }
 
   return (
@@ -21,15 +30,16 @@ export default function Pagination({
       <button
         disabled={currentPage === 1}
         onClick={() => onPageChange(currentPage - 1)}
-        className="px-4 py-2 bg-card rounded-lg disabled:opacity-50 hover:bg-accent/20 transition"
+        className="px-4 py-2 bg-card rounded-lg disabled:opacity-50 hover:bg-accent/20 transition text-sm"
       >
         ◀
       </button>
-      {pages.map((p) => (
+
+      {getPageNumbers().map((p) => (
         <button
           key={p}
           onClick={() => onPageChange(p)}
-          className={`px-4 py-2 rounded-lg transition ${
+          className={`px-4 py-2 rounded-lg transition text-sm ${
             p === currentPage
               ? 'bg-accent text-white'
               : 'bg-card hover:bg-accent/20'
@@ -38,11 +48,11 @@ export default function Pagination({
           {p}
         </button>
       ))}
-      {totalPages > 5 && <span className="px-4 py-2 text-gray-400">...</span>}
+
       <button
         disabled={currentPage === totalPages}
         onClick={() => onPageChange(currentPage + 1)}
-        className="px-4 py-2 bg-card rounded-lg disabled:opacity-50 hover:bg-accent/20 transition"
+        className="px-4 py-2 bg-card rounded-lg disabled:opacity-50 hover:bg-accent/20 transition text-sm"
       >
         ▶
       </button>
