@@ -7,7 +7,6 @@ import SearchBar from './components/SearchBar'
 import GenreFilter from './components/GenreFilter'
 import Pagination from './components/Pagination'
 
-// URL Colab Engine (gunakan URL tunnel dari Colab)
 const ENGINE_URL = process.env.NEXT_PUBLIC_ENGINE_URL || 'https://missav-engine.trycloudflare.com'
 
 interface Video {
@@ -18,10 +17,12 @@ interface Video {
   actress: string[]
 }
 
+// 🔥 PERBAIKAN: Tambahkan actresses
 interface VideoDetail extends Video {
   poster: string
   description: string
   genres: string[]
+  actresses: { name: string; slug: string }[]  // <-- DITAMBAHKAN
   m3u8_url: string
   release_date: string
   duration: string
@@ -38,7 +39,6 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedGenre, setSelectedGenre] = useState('')
 
-  // Ambil daftar genre
   useEffect(() => {
     fetch(`${ENGINE_URL}/api/genres`)
       .then(res => res.json())
@@ -46,7 +46,6 @@ export default function Home() {
       .catch(() => setGenres(['Mature', 'Anal', 'MILF', 'Slender', 'Youthful']))
   }, [])
 
-  // Ambil daftar video
   useEffect(() => {
     setLoading(true)
     const params = new URLSearchParams()
@@ -67,7 +66,6 @@ export default function Home() {
       })
   }, [currentPage, searchQuery, selectedGenre])
 
-  // Ambil detail video saat card diklik
   const handleCardClick = async (code: string) => {
     try {
       const res = await fetch(`${ENGINE_URL}/api/video/${code}`)
@@ -80,7 +78,6 @@ export default function Home() {
   }
 
   const handleDownload = (code: string) => {
-    // Kirim request download ke Colab
     fetch(`${ENGINE_URL}/api/download`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -97,7 +94,6 @@ export default function Home() {
 
   return (
     <main className="container mx-auto px-4 py-6 max-w-7xl">
-      {/* Header */}
       <header className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         <h1 className="text-2xl font-bold text-accent">🎬 MissAV Downloader</h1>
         <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
@@ -106,7 +102,6 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Daftar Video */}
       {loading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {[...Array(8)].map((_, i) => (
@@ -137,7 +132,6 @@ export default function Home() {
         </>
       )}
 
-      {/* Modal Detail Video */}
       <VideoModal
         isOpen={isModalOpen}
         video={selectedVideo}
