@@ -11,7 +11,7 @@ module.exports = {
         card: '#16213e',
         accent: '#e94560',
         accent2: '#4fc3f7',
-      }
+      },
     },
   },
   plugins: [],
