@@ -8,6 +8,7 @@ interface VideoModalProps {
     code: string
     title: string
     poster: string
+    thumbnail?: string  // <-- DITAMBAHKAN
     description: string
     actresses: { name: string; slug: string }[]
     genres: string[]
@@ -51,7 +52,6 @@ export default function VideoModal({
         className="bg-card rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto relative"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Tombol Close */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl z-10"
@@ -59,23 +59,22 @@ export default function VideoModal({
           ✕
         </button>
 
-        {/* Konten */}
         <div className="flex flex-col md:flex-row p-6 gap-6">
-          {/* Poster */}
           <div className="md:w-2/5 flex-shrink-0">
             <img
-              src={video.poster || video.thumbnail}
+              src={video.poster || video.thumbnail || ''}  // <-- PERBAIKAN DI SINI
               alt={video.title}
               className="w-full rounded-lg shadow-lg object-cover aspect-[2/3]"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x450?text=No+Image'
+              }}
             />
           </div>
 
-          {/* Detail */}
           <div className="md:w-3/5 space-y-3">
             <h2 className="text-xl font-bold text-accent">{video.code}</h2>
             <h3 className="text-lg font-semibold">{video.title}</h3>
 
-            {/* Aktris */}
             {video.actresses && video.actresses.length > 0 && (
               <div>
                 <p className="text-sm text-gray-400">🎭 Aktris</p>
@@ -93,7 +92,6 @@ export default function VideoModal({
               </div>
             )}
 
-            {/* Genre */}
             {video.genres && video.genres.length > 0 && (
               <div>
                 <p className="text-sm text-gray-400">🏷️ Genre</p>
@@ -111,7 +109,6 @@ export default function VideoModal({
               </div>
             )}
 
-            {/* Deskripsi */}
             {video.description && (
               <div>
                 <p className="text-sm text-gray-400">📝 Deskripsi</p>
@@ -121,13 +118,11 @@ export default function VideoModal({
               </div>
             )}
 
-            {/* Metadata */}
             <div className="flex gap-4 text-xs text-gray-400">
               {video.release_date && <span>📅 {video.release_date}</span>}
               {video.duration && <span>⏱️ {video.duration}</span>}
             </div>
 
-            {/* Tombol Download */}
             <button
               onClick={() => onDownload(video.code)}
               className="w-full bg-accent hover:bg-accent/80 text-white font-bold py-2 px-4 rounded-lg transition mt-2"
